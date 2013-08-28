@@ -145,23 +145,57 @@
             if( $_SERVER['REQUEST_METHOD'] != 'POST' )
                 return false;
 
+            ExceptionManager::debug('Request Method Check OK');
+
             if( !is_callable($callback) )
             {
                 ExceptionManager::warn('No callback specified. or check callback is callable function, NOT string, array, object, etc. ');
                 return false;
             }
 
-            if( strpos($_SERVER['PATH_INFO'], $routePath) !== 0)
-                return false;
+            ExceptionManager::debug('Callback check OK');
 
-            if( (substr($_SERVER['PATH_INFO'], -1) == '/' ? substr($_SERVER['PATH_INFO'], 0, strlen($_SERVER['PATH_INFO']) - 1) : $_SERVER['PATH_INFO'])
-                !=
-                (substr($routePath, -1) == '/' ? substr($routePath, 0, strlen($routePath) - 1) : $routePath) )
-                return false;
+
+            if( strpos($routePath, '*') !== false) // use wildcard match
+            {
+                ExceptionManager::debug('i think you are using wildcard');
+                $routeWildcardMatches = array();
+                //$routeWildcardRegExp = '/'.str_replace('*', '([^\\/]+)', str_replace('/', '\\/', preg_replace('/[\\*]+/', '*', $routePath))).'/i';
+                $routeWildcardRegExp = '/^'.str_replace('*', '(.+)', str_replace('/', '\\/', preg_replace('/[\\*]+/', '*', $routePath))).'/i';
+                ExceptionManager::debug($routeWildcardRegExp);
+                if( preg_match($routeWildcardRegExp, $_SERVER['PATH_INFO'], $routeWildcardMatches) !== 1 )
+                    return false;
+                else
+                {
+                    ExceptionManager::debug('wildcard check OK');
+
+                    array_shift($routeWildcardMatches);
+                    for($i = 0 ; $i < count($routeWildcardMatches) ; $i++)
+                    {
+                        $routeWildcardMatches[$i] = preg_replace('/^[\\/]+/i', '', $routeWildcardMatches[$i]);
+                        $routeWildcardMatches[$i] = preg_replace('/[\\/]+$/i', '', $routeWildcardMatches[$i]);
+                        if($routeWildcardMatches[$i] === '')
+                            unset($routeWildcardMatches[$i]);
+                    }
+
+                    self::finalize($responseContentType, $callback($routeWildcardMatches));
+                    return true;
+                }
+            }
             else
             {
-                self::finalize($responseContentType, $callback());
-                return true;
+                if( strpos($_SERVER['PATH_INFO'], $routePath) !== 0)
+                    return false;
+
+                if( (substr($_SERVER['PATH_INFO'], -1) == '/' ? substr($_SERVER['PATH_INFO'], 0, strlen($_SERVER['PATH_INFO']) - 1) : $_SERVER['PATH_INFO'])
+                    !=
+                    (substr($routePath, -1) == '/' ? substr($routePath, 0, strlen($routePath) - 1) : $routePath) )
+                    return false;
+                else
+                {
+                    self::finalize($responseContentType, $callback());
+                    return true;
+                }
             }
         }
 
@@ -171,23 +205,57 @@
             if( $_SERVER['REQUEST_METHOD'] != 'PUT' )
                 return false;
 
+            ExceptionManager::debug('Request Method Check OK');
+
             if( !is_callable($callback) )
             {
                 ExceptionManager::warn('No callback specified. or check callback is callable function, NOT string, array, object, etc. ');
                 return false;
             }
 
-            if( strpos($_SERVER['PATH_INFO'], $routePath) !== 0)
-                return false;
+            ExceptionManager::debug('Callback check OK');
 
-            if( (substr($_SERVER['PATH_INFO'], -1) == '/' ? substr($_SERVER['PATH_INFO'], 0, strlen($_SERVER['PATH_INFO']) - 1) : $_SERVER['PATH_INFO'])
-                !=
-                (substr($routePath, -1) == '/' ? substr($routePath, 0, strlen($routePath) - 1) : $routePath) )
-                return false;
+
+            if( strpos($routePath, '*') !== false) // use wildcard match
+            {
+                ExceptionManager::debug('i think you are using wildcard');
+                $routeWildcardMatches = array();
+                //$routeWildcardRegExp = '/'.str_replace('*', '([^\\/]+)', str_replace('/', '\\/', preg_replace('/[\\*]+/', '*', $routePath))).'/i';
+                $routeWildcardRegExp = '/^'.str_replace('*', '(.+)', str_replace('/', '\\/', preg_replace('/[\\*]+/', '*', $routePath))).'/i';
+                ExceptionManager::debug($routeWildcardRegExp);
+                if( preg_match($routeWildcardRegExp, $_SERVER['PATH_INFO'], $routeWildcardMatches) !== 1 )
+                    return false;
+                else
+                {
+                    ExceptionManager::debug('wildcard check OK');
+
+                    array_shift($routeWildcardMatches);
+                    for($i = 0 ; $i < count($routeWildcardMatches) ; $i++)
+                    {
+                        $routeWildcardMatches[$i] = preg_replace('/^[\\/]+/i', '', $routeWildcardMatches[$i]);
+                        $routeWildcardMatches[$i] = preg_replace('/[\\/]+$/i', '', $routeWildcardMatches[$i]);
+                        if($routeWildcardMatches[$i] === '')
+                            unset($routeWildcardMatches[$i]);
+                    }
+
+                    self::finalize($responseContentType, $callback($routeWildcardMatches));
+                    return true;
+                }
+            }
             else
             {
-                self::finalize($responseContentType, $callback());
-                return true;
+                if( strpos($_SERVER['PATH_INFO'], $routePath) !== 0)
+                    return false;
+
+                if( (substr($_SERVER['PATH_INFO'], -1) == '/' ? substr($_SERVER['PATH_INFO'], 0, strlen($_SERVER['PATH_INFO']) - 1) : $_SERVER['PATH_INFO'])
+                    !=
+                    (substr($routePath, -1) == '/' ? substr($routePath, 0, strlen($routePath) - 1) : $routePath) )
+                    return false;
+                else
+                {
+                    self::finalize($responseContentType, $callback());
+                    return true;
+                }
             }
         }
 
@@ -196,23 +264,57 @@
             if( $_SERVER['REQUEST_METHOD'] != 'DELETE' )
                 return false;
 
+            ExceptionManager::debug('Request Method Check OK');
+
             if( !is_callable($callback) )
             {
                 ExceptionManager::warn('No callback specified. or check callback is callable function, NOT string, array, object, etc. ');
                 return false;
             }
 
-            if( strpos($_SERVER['PATH_INFO'], $routePath) !== 0)
-                return false;
+            ExceptionManager::debug('Callback check OK');
 
-            if( (substr($_SERVER['PATH_INFO'], -1) == '/' ? substr($_SERVER['PATH_INFO'], 0, strlen($_SERVER['PATH_INFO']) - 1) : $_SERVER['PATH_INFO'])
-                !=
-                (substr($routePath, -1) == '/' ? substr($routePath, 0, strlen($routePath) - 1) : $routePath) )
-                return false;
+
+            if( strpos($routePath, '*') !== false) // use wildcard match
+            {
+                ExceptionManager::debug('i think you are using wildcard');
+                $routeWildcardMatches = array();
+                //$routeWildcardRegExp = '/'.str_replace('*', '([^\\/]+)', str_replace('/', '\\/', preg_replace('/[\\*]+/', '*', $routePath))).'/i';
+                $routeWildcardRegExp = '/^'.str_replace('*', '(.+)', str_replace('/', '\\/', preg_replace('/[\\*]+/', '*', $routePath))).'/i';
+                ExceptionManager::debug($routeWildcardRegExp);
+                if( preg_match($routeWildcardRegExp, $_SERVER['PATH_INFO'], $routeWildcardMatches) !== 1 )
+                    return false;
+                else
+                {
+                    ExceptionManager::debug('wildcard check OK');
+
+                    array_shift($routeWildcardMatches);
+                    for($i = 0 ; $i < count($routeWildcardMatches) ; $i++)
+                    {
+                        $routeWildcardMatches[$i] = preg_replace('/^[\\/]+/i', '', $routeWildcardMatches[$i]);
+                        $routeWildcardMatches[$i] = preg_replace('/[\\/]+$/i', '', $routeWildcardMatches[$i]);
+                        if($routeWildcardMatches[$i] === '')
+                            unset($routeWildcardMatches[$i]);
+                    }
+
+                    self::finalize($responseContentType, $callback($routeWildcardMatches));
+                    return true;
+                }
+            }
             else
             {
-                self::finalize($responseContentType, $callback());
-                return true;
+                if( strpos($_SERVER['PATH_INFO'], $routePath) !== 0)
+                    return false;
+
+                if( (substr($_SERVER['PATH_INFO'], -1) == '/' ? substr($_SERVER['PATH_INFO'], 0, strlen($_SERVER['PATH_INFO']) - 1) : $_SERVER['PATH_INFO'])
+                    !=
+                    (substr($routePath, -1) == '/' ? substr($routePath, 0, strlen($routePath) - 1) : $routePath) )
+                    return false;
+                else
+                {
+                    self::finalize($responseContentType, $callback());
+                    return true;
+                }
             }
         }
 
